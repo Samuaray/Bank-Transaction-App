@@ -1,2 +1,2 @@
 # Python-Sudoku
-Sudoku game using Python
+Sudoku game using Python, (on hold)
