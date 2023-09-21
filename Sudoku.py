@@ -1,32 +1,41 @@
-from Sudoku import get_transaction_history
-from Sudoku import create_transaction
-import tkinter as tk
+import mysql.connector
+import os
+def create_connection():
+    conn = mysql.connector.connect(
+      host=os.getenv("DB_HOST"), #Enviromental variables hold the keys
+      user=os.getenv("DB_USER"),
+      password=os.getenv("DB_PASSWORD"),
+      database=os.getenv("DB_DATABASE")
+    )
+    return conn
 
-def on_button1_click():
-    # This will activate the create_transaction function when Button 1 is clicked
-    create_transaction()
-    print("Button 1 clicked!")  # This will indicate that the button has been clicked
+def setup_db():
+    conn = create_connection()
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE transactions
+        (id INT AUTO_INCREMENT PRIMARY KEY, sender_account_id VARCHAR(255), receiver_account_id VARCHAR(255), amount FLOAT)
+    ''')
+    conn.commit()
+    conn.close()
 
-def on_button2_click():
-    # This will activate the get_transaction_history function when Button 2 is clicked
-    get_transaction_history()
-    print("Button 2 clicked!")  # This will indicate that the button has been clicked
 
-# Create the main window
-root = tk.Tk()
-root.title("Basic GUI")
+def create_transaction(sender, receiver, amount):
+    conn = create_connection()
+    c = conn.cursor()
+    c.execute("INSERT INTO transactions (sender_account_id, receiver_account_id, amount) VALUES (%s, %s, %s)",
+              (sender, receiver, amount))
+    conn.commit()
+    conn.close()
 
-# Add a button and link it to the on_button1_click function
-button1 = tk.Button(root, text="Create Transaction", command=on_button1_click)  # Renamed the button to reflect its functionality
-button1.pack(pady=20)
 
-# Add another button and link it to the on_button2_click function
-button2 = tk.Button(root, text="Get Transaction History", command=on_button2_click)  # Renamed the button to reflect its functionality
-button2.pack(pady=20)
-
-# Start the main loop to display the window
-root.mainloop()
-
+def get_transaction_history():
+    conn = create_connection()
+    c = conn.cursor()
+    c.execute("SELECT * FROM transactions")
+    transactions = c.fetchall()
+    conn.close()
+    return transactions
 
 # Run the function when the script is run
 
