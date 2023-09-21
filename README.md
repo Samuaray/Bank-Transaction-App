@@ -1,2 +1,2 @@
 # Python-Sudoku
-Sudoku game using Python
+Bank transaction system using python 

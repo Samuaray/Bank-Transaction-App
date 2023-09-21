@@ -1,27 +1,34 @@
-import sqlite3
+from Sudoku import get_transaction_history
+from Sudoku import create_transaction
+import tkinter as tk
 
-def setup_db():
-    conn = sqlite3.connect('banking.db')  # creates a file named 'banking.db' in your local directory
-    c = conn.cursor()
-    c.execute('''
-        CREATE TABLE transactions
-        (id INTEGER PRIMARY KEY, sender_account_id TEXT, receiver_account_id TEXT, amount REAL)
-    ''')
-    conn.commit()
-    conn.close()
+def on_button1_click():
+    # This will activate the create_transaction function when Button 1 is clicked
+    create_transaction()
+    print("Button 1 clicked!")  # This will indicate that the button has been clicked
 
-def create_transaction(sender, receiver, amount):
-    conn = sqlite3.connect('banking.db')
-    c = conn.cursor()
-    c.execute("INSERT INTO transactions (sender_account_id, receiver_account_id, amount) VALUES (?, ?, ?)",
-              (sender, receiver, amount))
-    conn.commit()
-    conn.close()
+def on_button2_click():
+    # This will activate the get_transaction_history function when Button 2 is clicked
+    get_transaction_history()
+    print("Button 2 clicked!")  # This will indicate that the button has been clicked
 
-def get_transaction_history():
-    conn = sqlite3.connect('banking.db')
-    c = conn.cursor()
-    c.execute("SELECT * FROM transactions")
-    transactions = c.fetchall()
-    conn.close()
-    return transactions
+# Create the main window
+root = tk.Tk()
+root.title("Basic GUI")
+
+# Add a button and link it to the on_button1_click function
+button1 = tk.Button(root, text="Create Transaction", command=on_button1_click)  # Renamed the button to reflect its functionality
+button1.pack(pady=20)
+
+# Add another button and link it to the on_button2_click function
+button2 = tk.Button(root, text="Get Transaction History", command=on_button2_click)  # Renamed the button to reflect its functionality
+button2.pack(pady=20)
+
+# Start the main loop to display the window
+root.mainloop()
+
+
+# Run the function when the script is run
+
+
+# create_transaction('bob','bank1',5000)
